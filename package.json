@@ -11,10 +11,11 @@
   },
   "dependencies": {
     "express": "^4.15.2",
+    "node-vibrant": "^3.2.0-alpha",
     "spotify-web-api-node": "^2.3.6"
   },
   "engines": {
-    "node": "6.10.x"
+    "node": "10.x"
   },
   "repository": {
     "url": "https://github.com/arirawr/spotifyapi-workshop"

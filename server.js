@@ -49,11 +49,12 @@ spotifyApi.clientCredentialsGrant()
 app.get('/search-track', function (request, response) {
   
   // Search for a track!
-  spotifyApi.searchTracks('track:proud of u', {limit: 1})
+  spotifyApi.searchTracks('track:Envy Me', {limit: 1})
     .then(function(data) {
     
       // Send the first (only) track object
       response.send(data.body.tracks.items[0]);
+    
     
     }, function(err) {
       console.error(err);
@@ -62,49 +63,44 @@ app.get('/search-track', function (request, response) {
 
 app.get('/category-playlists', function (request, response) {
   
-  // Make an initial list of countries
-  let countries = [
-    {
-      name: "Sweden",
-      code: "SE"
-    },
-    {
-      name: "France",
-      code: "FR"
-    },
-  ];
-  
-  
-  // Get the playlists for the given category for each country
+  // Get playlists from a browse category
+  // Find out which categories are available here: https://beta.developer.spotify.com/console/get-browse-categories/
+  let countries = [{
+    name: 'Sweden',
+    code: 'SE'
+  },
+      {
+    name: 'France',
+    code: 'FR'
+  }];
+   
   countries.forEach((c) => {
-    spotifyApi.getPlaylistsForCategory(
-      'jazz', 
-      { country: c.code, limit : 10 }
+   spotifyApi.getPlaylistsForCategory('workout', { country: c.code, limit : 10 }
     )
-      .then((data) => {
-        // Persist the data on this country object
-        c.data = data.body;
-    }, function(err) {
-      console.error(err);
-    });
+    .then((data) => {
+    
+    c.data = data.body; 
+  }, function(err) {
+    console.error(err);
   });
+});
+//     while (
+//       countries.filter(c => c.data !== undefined).length === countries.length) 
+//     {console.log(countries)}
+//   response.send(countries);
+
+// });
   
-  // Check will see if we have .data on all the country objects
-  // which indicates all requests have returned successfully.
-  // If the lengths don't match then we call check again in 500ms
   let check = () => {
-    if (countries.filter(c => c.data !== undefined).length 
-    !== countries.length) {
+    if (countries.filter (c => c.data !== undefined).length
+        !== countries.length) {
       setTimeout(check, 500);
     } else {
       response.send(countries);
-    }
   }
-  
-  // Call check so we don't send a response until we have all the data back
+}
   check();
 });
-
 app.get('/audio-features', function (request, response) {
   
   // Get the audio features for a track ID
@@ -122,7 +118,7 @@ app.get('/audio-features', function (request, response) {
 app.get('/artist', function (request, response) {
   
   // Get information about an artist
-  spotifyApi.getArtist('6jJ0s89eD6GaHleKKya26X')
+  spotifyApi.getArtist('2hazSY4Ef3aB9ATXW7F5w3')
     .then(function(data) {
     
       // Send the list of tracks
@@ -136,7 +132,7 @@ app.get('/artist', function (request, response) {
 app.get('/artist-top-tracks', function (request, response) {
   
   // Get an artist's top tracks in a country
-  spotifyApi.getArtistTopTracks('0LcJLqbBmaGUft1e9Mm8HV', 'SE')
+  spotifyApi.getArtistTopTracks('0oSGxfWSnnOXhD2fKuz2Gy', 'SE')
     .then(function(data) {
     
       // Send the list of tracks
@@ -146,6 +142,33 @@ app.get('/artist-top-tracks', function (request, response) {
       console.error(err);
     });
 });
+
+// Get artists related to an artist
+var spotifyApi = new SpotifyWebApi();
+
+var artistId = '0qeei9KQnptjwb8MgkqEoy';
+
+spotifyApi.getArtistRelatedArtists(artistId).then(
+  function(data) {
+    if (data.body.artists.length) {
+      // Print the number of similar artists
+      console.log('I got ' + data.body.artists.length + ' similar artists!');
+
+      console.log('The most similar one is ' + data.body.artists[0].name);
+    } else {
+      console.log("I didn't find any similar artists.. Sorry.");
+    }
+  
+  },
+  function(err) {
+    console.log('Something went wrong..', err.message);
+  }
+);
+
+
+
+
+
 
 
 //-------------------------------------------------------------//
