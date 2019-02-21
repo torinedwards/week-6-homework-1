@@ -1,7 +1,7 @@
 // client-side js
 // run by the browser each time your view template is loaded
 
-$(function() {
+function run() {
     
   fetch('/search-track').then(resp => resp.json()).then((data) => {
     // "Data" is the object we get from the API. See server.js for the function that returns it.
@@ -10,11 +10,17 @@ $(function() {
     console.groupEnd();
     
     // Display the track name
-    var trackName = $(
+    
       // '<h3><a href="' + data.external_urls.spotify + '" target="blank">' + data.name + '</a></h3>'
-      `<h3><a href="${data.external_urls.spotify}">${data.name}</a></h3>`
-    );
-    trackName.appendTo('#search-track-container');
+      
+    var node = document.createElement("a");                 // Create a <li> node
+    node.setAttribute('href', data.external_urls.spotify);
+    var textnode = document.createTextNode(data.name);         // Create a text node
+      node.appendChild(textnode);                              // Append the text to <li>
+      document.getElementById("myList").appendChild(node);
+      
+     
+   
     
     // Display the artist name
     var artists = '';
@@ -27,13 +33,13 @@ $(function() {
     h5.innerText = artists;
     document.getElementById('search-track-container').append(h5);
     
-    // Display the album art
-    var img = $('<img/>');
-    img.attr('src', data.album.images[0].url);
-    img.appendTo('#search-track-container');
+    // Display the album art    
+    var img = document.createElement("img");
+    img.setAttribute('src', data.album.images[0].url);
+    document.getElementById('search-track-container').append(img);
   });
-  
-  $.get('/category-playlists', function(data) {
+    
+  fetch('/category-playlists').then(resp => resp.json()).then((data) => {
     // "Data" is the object we get from the API. See server.js for the function that returns it.
     console.group('%cResponse from /category-playlists', 'color: #F037A5; font-size: large');
     console.log(data);
@@ -42,16 +48,21 @@ $(function() {
     // Display the covers of the playlists
     data
       .forEach((c) => {
-      $('#category-playlists-container').append(`<br><h1>${c.name}</h1><br>`)
+          let h1 = document.createElement('h1');
+          h1.innerText = c.name;
+      document.getElementById('category-playlists-container').append(h1)
       c.data.playlists.items.map(function(playlist, i) {
-      var img = $('<img class="cover-image"/>');
-      img.attr('src', playlist.images[0].url);
-      img.appendTo('#category-playlists-container');
+    
+      var img = document.createElement("img");
+      img.setAttribute('src', playlist.images[0].url);
+      document.getElementById('category-playlists-container').append(img);
+    
+ 
     });
     })
   });
-  
-  $.get('/audio-features', function(data) {
+    fetch('/category-playlists').then(resp => resp.json()).then((data) => {
+
     // "Data" is the object we get from the API. See server.js for the function that returns it.
     console.group('%cResponse from /audio-features', 'color: #F037A5; font-size: large');
     console.log(data);
@@ -63,35 +74,53 @@ $(function() {
     // Display the audio features
     keys.map(function(key, i) {
       if (data.hasOwnProperty(key)) {
-        var feature = $('<p><span class="big-number">' + data[key] + ' </span>'  + key + '</p>');
-        feature.appendTo('#audio-features-container');
+        
+        
+     let p = document.createElement('p');
+             let span = document.createElement('span');
+
+      document.getElementById('audio-features-container').append(p).appendChild($(`data[key] + ' </span>'  + key `));
+        
+
+        
       }
     });
   });
   
-  $.get('/artist', function(data) {
+  
+  fetch('/artist').then(resp => resp.json()).then((data) => {
     // "Data" is the object we get from the API. See server.js for the function that returns it.
     console.group('%cResponse from /artist', 'color: #F037A5; font-size: large');
     console.log(data);
     console.groupEnd();
     
     // Display the artist's image
-    var img = $('<img class="circle-image" />');
-    img.attr('src', data.images[0].url);
-    img.appendTo('#artist-container');
+
+  var img = document.createElement("img");
+      img.setAttribute('src', data.images[0].url);
+      document.getElementById('artist-container').append(img);
     
     // Display the artist name
-    var trackName = $('<h3>' + data.name + '</h3>');
-    trackName.appendTo('#artist-container');
+    
+       let h3 = document.createElement('h3');
+    h3.innerText = data.name;
+    document.getElementById('search-track-container').append(h3);
+    
     
     // Display the artist's genres
     data.genres.map(function(genre, i) {
-      var genreItem = $('<p>' + genre + '</p>');
-      genreItem.appendTo('#artist-container');
+      
+      
+    let p = document.createElement('P');
+    p.innerText = genre;
+    document.getElementById('artist-container').append(p);
+      
     });
   });
   
-  $.get('/artist-top-tracks', function(data) {
+  
+    fetch('/artist-top-tracks').then(resp => resp.json()).then((data) => {
+
     // "Data" is the object we get from the API. See server.js for the function that returns it.
     console.group('%cResponse from /artist-top-tracks', 'color: #F037A5; font-size: large');
     console.log(data);
@@ -99,9 +128,14 @@ $(function() {
     
     // Display the audio features
     data.map(function(track, i) {
-      var trackName = $('<li>' + track.name + '</li>');
-      trackName.appendTo('#top-tracks-container');
+      
+        
+    let li = document.createElement('li');
+    li.innerText = track.name;
+    document.getElementById('top-tracks-container').append(li);
+    
     });
   });
 
-});
+};
+run();
