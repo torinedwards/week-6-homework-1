@@ -49,7 +49,7 @@ spotifyApi.clientCredentialsGrant()
 app.get('/search-track', function (request, response) {
   
   // Search for a track!
-  spotifyApi.searchTracks('track:proud of u', {limit: 1})
+  spotifyApi.searchTracks('track:Dancing Queen', {limit: 1})
     .then(function(data) {
     
       // Send the first (only) track object
@@ -65,20 +65,19 @@ app.get('/category-playlists', function (request, response) {
   // Make an initial list of countries
   let countries = [
     {
-      name: "Sweden",
-      code: "SE"
+      name: "United Kingdom of Great Britain and Northern Ireland",
+      code: "GB"
     },
-    {
-      name: "France",
-      code: "FR"
-    },
+     {name: "United States of America",
+     code: "US"
+     }
   ];
   
   
   // Get the playlists for the given category for each country
   countries.forEach((c) => {
     spotifyApi.getPlaylistsForCategory(
-      'jazz', 
+      'workout', 
       { country: c.code, limit : 10 }
     )
       .then((data) => {
@@ -122,7 +121,7 @@ app.get('/audio-features', function (request, response) {
 app.get('/artist', function (request, response) {
   
   // Get information about an artist
-  spotifyApi.getArtist('6jJ0s89eD6GaHleKKya26X')
+  spotifyApi.getArtist('2hazSY4Ef3aB9ATXW7F5w3')
     .then(function(data) {
     
       // Send the list of tracks
@@ -136,7 +135,7 @@ app.get('/artist', function (request, response) {
 app.get('/artist-top-tracks', function (request, response) {
   
   // Get an artist's top tracks in a country
-  spotifyApi.getArtistTopTracks('0LcJLqbBmaGUft1e9Mm8HV', 'SE')
+  spotifyApi.getArtistTopTracks('0LcJLqbBmaGUft1e9Mm8HV', 'GB')
     .then(function(data) {
     
       // Send the list of tracks
